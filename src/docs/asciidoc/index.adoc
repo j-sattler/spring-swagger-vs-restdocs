@@ -1,0 +1,69 @@
+= API Documentation with Spring RestDocs
+Joshua Sattler;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+
+Simple CRUD API demonstrating how to use Spring RestDocs with Gradle and JUnit5.
+
+== Person Resource
+
+=== Create new Person
+
+include::{snippets}/persons/create/curl-request.adoc[]
+
+HTTP request:
+
+include::{snippets}/persons/create/http-request.adoc[]
+
+HTTP response:
+
+include::{snippets}/persons/create/http-response.adoc[]
+
+=== Retrieve all Persons
+
+include::{snippets}/persons/retrieve-all/curl-request.adoc[]
+
+HTTP request:
+
+include::{snippets}/persons/retrieve-all/http-request.adoc[]
+
+HTTP response:
+
+include::{snippets}/persons/retrieve-all/http-response.adoc[]
+
+=== Retrieve Person by Id
+
+include::{snippets}/persons/retrieve-by-id/curl-request.adoc[]
+
+HTTP request:
+
+include::{snippets}/persons/retrieve-by-id/http-request.adoc[]
+
+HTTP response:
+
+include::{snippets}/persons/retrieve-by-id/http-response.adoc[]
+
+=== Update Person
+
+include::{snippets}/persons/update/curl-request.adoc[]
+
+HTTP request:
+
+include::{snippets}/persons/update/http-request.adoc[]
+
+HTTP response:
+
+include::{snippets}/persons/update/http-response.adoc[]
+
+=== Delete Person
+
+include::{snippets}/persons/delete/curl-request.adoc[]
+
+HTTP request:
+
+include::{snippets}/persons/delete/http-request.adoc[]
+
+HTTP response:
+
+include::{snippets}/persons/delete/http-response.adoc[]

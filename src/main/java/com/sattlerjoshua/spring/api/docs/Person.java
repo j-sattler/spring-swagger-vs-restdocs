@@ -1,8 +1,6 @@
 package com.sattlerjoshua.spring.api.docs;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.*;
 
 /**
  * Immutable class that represents a person resource.
@@ -13,11 +11,13 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 public class Person {
 
     private final Long id;
-
     private final String firstName;
     private final String lastName;
 
-    Person(Long id, String firstName, String lastName){
+    @JsonCreator
+    Person(@JsonProperty("id") Long id,
+           @JsonProperty("firstName") String firstName,
+           @JsonProperty("lastName") String lastName){
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;

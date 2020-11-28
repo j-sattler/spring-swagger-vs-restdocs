@@ -16,15 +16,20 @@ import java.util.*;
  * @author joshua.sattler@mailbox.org
  */
 @RestController
-@RequestMapping("/persons")
+@RequestMapping(PersonController.PERSON_API_PATH)
 @Api(tags = "Person Controller")
 class PersonController {
+
+    public static final String PERSON_API_PATH = "/persons";
 
     private transient static Long personCounter = 0L;
     private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
 
-    private final Map<Long, Person> persons = new HashMap<>();
+    private final Map<Long, Person> persons;
 
+    PersonController(Map<Long, Person> persons) {
+        this.persons = persons;
+    }
 
     /**
      * Create a new person.
