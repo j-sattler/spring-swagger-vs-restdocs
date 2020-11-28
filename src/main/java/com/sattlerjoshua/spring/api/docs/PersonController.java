@@ -1,9 +1,12 @@
 package com.sattlerjoshua.spring.api.docs;
 
 import io.swagger.annotations.Api;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -17,49 +20,64 @@ import java.util.*;
 @Api(tags = "Person Controller")
 class PersonController {
 
+    private transient static Long personCounter = 0L;
+    private static final Logger logger = LoggerFactory.getLogger(PersonController.class);
+
     private final Map<Long, Person> persons = new HashMap<>();
+
 
     /**
      * Create a new person.
+     * This operation is not idempotent so each request creates a new person.
      *
-     * @param person
-     * @return
+     * @param person the new person resource to create.
+     * @return the newly created person.
      */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    Person create(Person person){
-        return null;
+    @ResponseStatus(HttpStatus.CREATED)
+    Person create(@RequestBody Person person) {
+        Objects.requireNonNull(person, "Person cannot be null");
+        logger.info("POST request to create new person with parameters: {}", person);
+        return persons.computeIfAbsent(++personCounter, (id) ->
+                new Person(id, person.firstName(), person.lastName()));
     }
 
     /**
      * Retrieve a person by its id.
      *
-     * @param id
-     * @return
+     * @param id the id of the person to retrieve.
+     * @return the person resource with given id.
      */
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    Person retrieveById(@PathVariable Long id){
-        return null;
+    Person retrieveById(@PathVariable Long id) {
+        Objects.requireNonNull(id, "Id cannot be null");
+        logger.info("GET request to retrieve person with id {}", id);
+        return Optional.ofNullable(persons.get(id))
+                .orElseThrow(PersonController::notfound);
     }
 
     /**
      * Retrieve all persons.
      *
-     * @return
+     * @return a collection of person resources.
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    Collection<Person> retrieveAll(){
-        return Set.of(new Person());
+    Collection<Person> retrieveAll() {
+        logger.info("GET request to retrieve all person resources");
+        return persons.values();
     }
 
     /**
      * Update the person entirely.
      *
      * @param person the new Person
-     * @return
+     * @return the updated person.
      */
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    Person update(Person person){
-        return null;
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    Person update(@RequestBody Person person, @PathVariable Long id) {
+        Objects.requireNonNull(person, "Person cannot be null");
+        logger.info("PUT request to update person with id {}", id);
+        return persons.computeIfPresent(id, (key, val) -> new Person(id, person.firstName(), person.lastName()));
     }
 
     /**
@@ -68,7 +86,15 @@ class PersonController {
      * @param id the id of the person to delete
      */
     @DeleteMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    void delete(@PathVariable Long id){
-        ResponseEntity.noContent();
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    void delete(@PathVariable Long id) {
+        logger.info("DELETE request to delete person resource with id {}", id);
+        Optional.ofNullable(persons.remove(id))
+                .orElseThrow(PersonController::notfound);
     }
+
+    private static ResponseStatusException notfound() {
+        return new ResponseStatusException(HttpStatus.NOT_FOUND, "Person not found");
+    }
+
 }

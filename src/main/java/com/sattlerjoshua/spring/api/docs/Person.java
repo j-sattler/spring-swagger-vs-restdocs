@@ -1,43 +1,49 @@
 package com.sattlerjoshua.spring.api.docs;
 
-class Person {
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
-    private static Long personCounter = 0L;
+/**
+ * Immutable class that represents a person resource.
+ *
+ * @author joshua.sattler@mailbox.org
+ */
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Person {
 
-    Long id;
+    private final Long id;
 
-    String firstName;
-    String lastName;
+    private final String firstName;
+    private final String lastName;
 
-    Person(){}
-
-    Person(String firstName, String lastName){
+    Person(Long id, String firstName, String lastName){
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.id = ++personCounter;
     }
 
-    public Long getId() {
+    @JsonGetter
+    public Long id() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFirstName() {
+    @JsonGetter
+    public String firstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
+    @JsonGetter
+    public String lastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }
